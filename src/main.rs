@@ -27,8 +27,6 @@ fn main() {
         ,169,157,219,170,161,56,150,167,230,253,232,139,25,60,121,62,74,230,112,206,32];
     println!("{:02x?}",x);
     let payer = Keypair::from_bytes(&x).unwrap();
-
-    let sk = hex::hex!(x);
     
     // 接收者的 SPL Token 地址
     let recipient_token_account_pubkey = solana_sdk::pubkey::Pubkey::from_str("ykVbD8L8zPdYM9cCP4EVzKCznoRx1T1VwoWj3CrRehG").unwrap();
