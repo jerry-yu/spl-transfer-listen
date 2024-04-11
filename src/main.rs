@@ -122,7 +122,7 @@ fn create(args: Vec<String>) {
     let data = DataV2 {
         name: "Deeper Network".to_string(),
         symbol: "DPR".to_string(),
-        uri: "https://lsyhwirpufwzvju76byfxhavbbq7ku4ve3jfth3eupnogssoqo3q.arweave.net/XLB7Ii-hbZqmn_BwW5wVCGH1U5Um0lmfZKPa40pOg7c".to_string(),
+        uri: "https://ufr343nip73e7bdegfknn5veyf6chb2q4ikz4nuxxqjqnt64ky2q.arweave.net/oWO-bah_9k-EZDFU1vakwXwjh1DiFZ42l7wTBs_cVjU".to_string(),
         seller_fee_basis_points: 0,
         creators: None,
         collection: None,
