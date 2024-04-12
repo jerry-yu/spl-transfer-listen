@@ -122,7 +122,7 @@ fn create(args: Vec<String>) {
     let data = DataV2 {
         name: "Deeper Network".to_string(),
         symbol: "DPR".to_string(),
-        uri: "https://ufr343nip73e7bdegfknn5veyf6chb2q4ikz4nuxxqjqnt64ky2q.arweave.net/oWO-bah_9k-EZDFU1vakwXwjh1DiFZ42l7wTBs_cVjU".to_string(),
+        uri: "https://44gphqzcxus5c2xbrleetiamwycy7pgfzjsjfkijacj6h5me6qvq.arweave.net/5wzzwyK9JdFq4YrISaAMtgWPvMXKZJKpCQCT4_WE9Cs".to_string(),
         seller_fee_basis_points: 0,
         creators: None,
         collection: None,
@@ -136,7 +136,7 @@ fn create(args: Vec<String>) {
         .mint(mint_keypair.pubkey())
         .payer(payer.pubkey())
         .update_authority(payer.pubkey(), true)
-        .is_mutable(false)
+        .is_mutable(true)
         .instruction();
 
     let mut transaction = Transaction::new_with_payer(
