@@ -189,6 +189,17 @@ fn mint(args: Vec<String>) {
     let mint_pubkey = Pubkey::from_str(&args[1]).unwrap();
 
     let recipient_token_pubkey = get_associated_token_address(&payer.pubkey(), &mint_pubkey);
+    let mut ixs = vec![];
+    if client.get_account(&recipient_token_pubkey).is_err() {
+        let ata_ix = create_associated_token_account(
+            &payer.pubkey(),
+            &payer.pubkey(),
+            &mint_pubkey,
+            &spl_token::ID,
+        );
+
+        ixs.push(ata_ix);
+    }
 
     let mint_to_instruction = token_instruction::mint_to(
         &spl_token::ID,
@@ -200,8 +211,9 @@ fn mint(args: Vec<String>) {
     )
     .unwrap();
 
-    let mut transaction =
-        Transaction::new_with_payer(&[mint_to_instruction], Some(&payer.pubkey()));
+    ixs.push(mint_to_instruction);
+
+    let mut transaction = Transaction::new_with_payer(&ixs, Some(&payer.pubkey()));
     transaction.sign(&[&payer], client.get_latest_blockhash().unwrap());
 
     client.send_and_confirm_transaction(&transaction).unwrap();
@@ -217,6 +229,45 @@ fn mint(args: Vec<String>) {
     // meta.metadata(mint)
 }
 
+//1. seed phrase 2. token account 3. new authority 4. rpc
+fn set_authority(args: Vec<String>) {
+    let len = args.len();
+
+    let rpc_url = if len == 4 {
+        args[3].clone()
+    } else {
+        "https://api.mainnet-beta.solana.com".to_string()
+    };
+
+    let client = RpcClient::new_with_commitment(rpc_url, CommitmentConfig::confirmed());
+    let payer = keypair(args[0].clone());
+    let token_pubkey = Pubkey::from_str(&args[1]).unwrap();
+    let new_author_pubkey = Pubkey::from_str(&args[2]).unwrap();
+
+    let set_authority_instruction = token_instruction::set_authority(
+        &spl_token::ID,
+        &token_pubkey,
+        Some(&new_author_pubkey),
+        token_instruction::AuthorityType::MintTokens,
+        &payer.pubkey(),
+        &[&payer.pubkey()],
+    )
+    .unwrap();
+
+    let mut transaction =
+        Transaction::new_with_payer(&[set_authority_instruction], Some(&payer.pubkey()));
+    transaction.sign(&[&payer], client.get_latest_blockhash().unwrap());
+
+    client.send_and_confirm_transaction(&transaction).unwrap();
+
+    println!(
+        "Token {} mint authority from {} to {}  success",
+        token_pubkey,
+        payer.pubkey(),
+        new_author_pubkey
+    )
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let len = args.len();
@@ -230,6 +281,7 @@ fn main() {
         }
         "create" => create(args[2..].to_vec()),
         "mint" => mint(args[2..].to_vec()),
+        "set_authority" => set_authority(args[2..].to_vec()),
         _ => {}
     }
 }
